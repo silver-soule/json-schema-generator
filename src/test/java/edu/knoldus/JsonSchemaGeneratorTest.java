@@ -18,8 +18,7 @@ public class JsonSchemaGeneratorTest {
     @Test
     public void testSimpleTransform() throws IOException {
         
-        JsonNode node = MAPPER.readValue(IOUtils.toString(JsonSchemaGenerator.class.getResourceAsStream("/normal_json.json"),
-                Charset.defaultCharset()), JsonNode.class);
+        JsonNode node = readFromFileAsJsonNode("/normal_json.json");
         
         JsonSchemaGenerator jsonSchemaGenerator = new JsonSchemaGenerator();
         JsonNode output = MAPPER.readValue(jsonSchemaGenerator.transformJsonToSchema(node), JsonNode.class);
@@ -31,8 +30,7 @@ public class JsonSchemaGeneratorTest {
     
     @Test
     public void testComplexTransformWithArray() throws IOException {
-        JsonNode node = MAPPER.readValue(IOUtils.toString(JsonSchemaGenerator.class.getResourceAsStream("/complex_data.json"),
-                Charset.defaultCharset()), JsonNode.class);
+        JsonNode node = readFromFileAsJsonNode("/complex_data.json");
         
         JsonSchemaGenerator jsonSchemaGenerator = new JsonSchemaGenerator();
         
@@ -40,5 +38,10 @@ public class JsonSchemaGeneratorTest {
         
         assertEquals("String", output.at("/payload/items/0/product/code").textValue());
         assertEquals("Integer", output.at("/payload/items/0/id").textValue());
+    }
+    
+    private JsonNode readFromFileAsJsonNode(String path) throws IOException {
+        return MAPPER.readValue(IOUtils.toString(JsonSchemaGenerator.class.getResourceAsStream(path),
+                Charset.defaultCharset()), JsonNode.class);
     }
 }

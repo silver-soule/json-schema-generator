@@ -2,7 +2,6 @@ package edu.knoldus;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -111,23 +110,4 @@ public class JsonSchemaGenerator {
         }
     }
     
-    private enum DataType {
-        
-        ARRAY("array"),
-        OBJECT("object"),
-        INTEGER("Integer"),
-        STRING("String"),
-        BOOLEAN("Boolean");
-        
-        private String type;
-        
-        DataType(String type) {
-            this.type = type;
-        }
-        
-        @Override
-        public String toString() {
-            return type;
-        }
-    }
 }
