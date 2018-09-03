@@ -2,32 +2,55 @@ package edu.knoldus;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import javax.xml.crypto.Data;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class JsonSchemaGenerator {
     
     public String transformJsonToSchema(JsonNode json) {
-        return transformJson(json).toString();
+        return transformJson(json, DataType.OBJECT, "").toString();
     }
     
     public StringBuilder transformJson(JsonNode json,
-                                       Datatype parentDataType) {
+                                       DataType parentDataType,
+                                       String parentNodeName) {
         
         List<String> tokenizedKeyValues = new ArrayList<>();
+        Iterator<String> keys = json.fieldNames();
         
-        for (JsonNode node : json) {
-            if (!node.isValueNode()) {
-                Datatype datatype = findDataTypeForContainerNode(node);
-                StringBuilder pojo = transformJson(node, datatype);
-                tokenizedKeyValues.add(pojo.toString());
+        if (parentDataType.equals(DataType.ARRAY)) {
+            for (JsonNode node : json) {
+                if (!node.isValueNode()) {
+                    DataType datatype = findDataTypeForContainerNode(node);
+                    StringBuilder pojo = transformJson(node, datatype, "");
+                    tokenizedKeyValues.add(pojo.toString());
+                    
+                } else {
+                    
+                    DataType dataType = findDataTypeForLeafNode(node);
+                    tokenizedKeyValues.add(buildJsonKeyValue("", dataType.toString()));
+                    
+                }
+            }
+        } else {
+            for (String curr = ""; keys.hasNext(); ) {
                 
-            } else {
+                curr = keys.next();
+                JsonNode node = json.get(curr);
                 
-                Datatype dataType = findDataTypeForLeafNode(node);
-                String nodeKey = node.fieldNames().next();
-                tokenizedKeyValues.add(buildJsonKeyValue(nodeKey, dataType.toString()));
-                
+                if (!node.isValueNode()) {
+                    DataType datatype = findDataTypeForContainerNode(node);
+                    StringBuilder pojo = transformJson(node, datatype, curr);
+                    tokenizedKeyValues.add(pojo.toString());
+                    
+                } else {
+                    
+                    DataType dataType = findDataTypeForLeafNode(node);
+                    tokenizedKeyValues.add(buildJsonKeyValue(curr, dataType.toString()));
+                    
+                }
             }
         }
         
@@ -38,18 +61,38 @@ public class JsonSchemaGenerator {
         }
         
         for (int i = 1; i < tokenizedKeyValues.size(); i++) {
-            op.append( "," + tokenizedKeyValues.get(i));
+            op.append("," + tokenizedKeyValues.get(i));
         }
+        
+        addParentData(parentDataType, parentNodeName, op);
         
         return op;
     }
     
-    private Datatype findDataTypeForContainerNode(JsonNode node) {
+    private void addParentData(DataType parentDataType, String parentNodeName, StringBuilder op) {
+        if (parentDataType.equals(DataType.ARRAY)) {
+            
+            op.append("]");
+            op.insert(0, "[");
+            if (!parentNodeName.equals("")) {
+                op.insert(0, String.format("\"%s\" : ", parentNodeName));
+            }
+        } else {
+            
+            op.append("}");
+            op.insert(0, "{");
+            if (!parentNodeName.equals("")) {
+                op.insert(0, String.format("\"%s\" : ", parentNodeName));
+            }
+        }
+    }
+    
+    private DataType findDataTypeForContainerNode(JsonNode node) {
         
         if (node.isArray()) {
-            return Datatype.ARRAY;
+            return DataType.ARRAY;
         } else {
-            return Datatype.OBJECT;
+            return DataType.OBJECT;
         }
     }
     
@@ -58,17 +101,17 @@ public class JsonSchemaGenerator {
         return String.format("\"%s\" : \"%s\"", key, value);
     }
     
-    private Datatype findDataTypeForLeafNode(JsonNode jsonNode) {
+    private DataType findDataTypeForLeafNode(JsonNode jsonNode) {
         if (jsonNode.isInt()) {
-            return Datatype.INTEGER;
+            return DataType.INTEGER;
         } else if (jsonNode.isBoolean()) {
-            return Datatype.BOOLEAN;
+            return DataType.BOOLEAN;
         } else {
-            return Datatype.STRING;
+            return DataType.STRING;
         }
     }
     
-    private enum Datatype {
+    private enum DataType {
         
         ARRAY("array"),
         OBJECT("object"),
@@ -78,10 +121,9 @@ public class JsonSchemaGenerator {
         
         private String type;
         
-        Datatype(String type) {
+        DataType(String type) {
             this.type = type;
         }
-        
         
         @Override
         public String toString() {
