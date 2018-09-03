@@ -1,0 +1,18 @@
+[
+  {
+    "id": 215809,
+    "arrivalDate": "20180505",
+    "product": {
+      "code": "ABCD",
+      "description": "Basic home appliance"
+    }
+  },
+  {
+    "id": 215817,
+    "appointmentDateTime": "20180606",
+    "product": {
+      "code": "FGH",
+      "description": "office applicance"
+    }
+  }
+]

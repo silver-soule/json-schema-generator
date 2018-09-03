@@ -9,7 +9,11 @@ import java.util.List;
 public class JsonSchemaGenerator {
     
     public String transformJsonToSchema(JsonNode json) {
-        return transformJson(json, DataType.OBJECT, "").toString();
+        if (findDataTypeForContainerNode(json).equals(DataType.OBJECT)) {
+            return transformJson(json, DataType.OBJECT, "").toString();
+        } else {
+            return transformJson(json, DataType.ARRAY, "").toString();
+        }
     }
     
     public StringBuilder transformJson(JsonNode json,
