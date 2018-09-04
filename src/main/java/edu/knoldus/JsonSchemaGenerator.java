@@ -8,11 +8,13 @@ import java.util.List;
 
 public class JsonSchemaGenerator {
     
+    public static final String EMPTY_STRING = "";
+    
     public String transformJsonToSchema(JsonNode json) {
         if (findDataTypeForContainerNode(json).equals(DataType.OBJECT)) {
-            return transformJson(json, DataType.OBJECT, "").toString();
+            return transformJson(json, DataType.OBJECT, EMPTY_STRING).toString();
         } else {
-            return transformJson(json, DataType.ARRAY, "").toString();
+            return transformJson(json, DataType.ARRAY, EMPTY_STRING).toString();
         }
     }
     
@@ -27,18 +29,18 @@ public class JsonSchemaGenerator {
             for (JsonNode node : json) {
                 if (!node.isValueNode()) {
                     DataType datatype = findDataTypeForContainerNode(node);
-                    StringBuilder pojo = transformJson(node, datatype, "");
+                    StringBuilder pojo = transformJson(node, datatype, EMPTY_STRING);
                     tokenizedKeyValues.add(pojo.toString());
                     
                 } else {
                     
                     DataType dataType = findDataTypeForLeafNode(node);
-                    tokenizedKeyValues.add(buildJsonKeyValue("", dataType.toString()));
+                    tokenizedKeyValues.add(buildJsonKeyValue(EMPTY_STRING, dataType.toString()));
                     
                 }
             }
         } else {
-            for (String curr = ""; keys.hasNext(); ) {
+            for (String curr = EMPTY_STRING; keys.hasNext(); ) {
                 
                 curr = keys.next();
                 JsonNode node = json.get(curr);
@@ -77,14 +79,14 @@ public class JsonSchemaGenerator {
             
             op.append("]");
             op.insert(0, "[");
-            if (!parentNodeName.equals("")) {
+            if (!parentNodeName.equals(EMPTY_STRING)) {
                 op.insert(0, String.format("\"%s\" : ", parentNodeName));
             }
         } else {
             
             op.append("}");
             op.insert(0, "{");
-            if (!parentNodeName.equals("")) {
+            if (!parentNodeName.equals(EMPTY_STRING)) {
                 op.insert(0, String.format("\"%s\" : ", parentNodeName));
             }
         }
