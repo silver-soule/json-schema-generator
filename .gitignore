@@ -5,4 +5,4 @@
 .idea_modules
 .idea_modules/*
 target
-javamainproject.iml
+*.iml
