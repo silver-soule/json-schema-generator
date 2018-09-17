@@ -14,10 +14,8 @@ public class FileReader {
     
     public JsonNode readJsonFromFile(String resourcePath) {
         
-        String content = null;
-        
         try {
-            content = IOUtils.toString(this.getClass().getResourceAsStream(resourcePath), UTF_8);
+            String content = IOUtils.toString(this.getClass().getResourceAsStream(resourcePath), UTF_8);
             return MAPPER.readValue(content, JsonNode.class);
             
         } catch (IOException e) {

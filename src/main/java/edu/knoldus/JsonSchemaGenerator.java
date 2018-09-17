@@ -11,49 +11,49 @@ public class JsonSchemaGenerator {
     public static final String EMPTY_STRING = "";
     
     public String transformJsonToSchema(JsonNode json) {
-        if (findDataTypeForContainerNode(json).equals(DataType.OBJECT)) {
-            return transformJson(json, DataType.OBJECT, EMPTY_STRING).toString();
+        if (findDataTypeForContainerNode(json).equals(NonLeafNode.OBJECT)) {
+            return transformJson(json, NonLeafNode.OBJECT, EMPTY_STRING).toString();
         } else {
-            return transformJson(json, DataType.ARRAY, EMPTY_STRING).toString();
+            return transformJson(json, NonLeafNode.ARRAY, EMPTY_STRING).toString();
         }
     }
     
     public StringBuilder transformJson(JsonNode json,
-                                       DataType parentDataType,
+                                       NonLeafNode parentLeafNode,
                                        String parentNodeName) {
         
         List<String> tokenizedKeyValues = new ArrayList<>();
         Iterator<String> keys = json.fieldNames();
         
-        if (parentDataType.equals(DataType.ARRAY)) {
+        if (parentLeafNode.equals(NonLeafNode.ARRAY)) {
             for (JsonNode node : json) {
                 if (!node.isValueNode()) {
-                    DataType datatype = findDataTypeForContainerNode(node);
+                    NonLeafNode datatype = findDataTypeForContainerNode(node);
                     StringBuilder pojo = transformJson(node, datatype, EMPTY_STRING);
                     tokenizedKeyValues.add(pojo.toString());
                     
                 } else {
                     
-                    DataType dataType = findDataTypeForLeafNode(node);
-                    tokenizedKeyValues.add(buildJsonKeyValue(EMPTY_STRING, dataType.toString()));
+                    LeafNode leafNode = findDataTypeForLeafNode(node);
+                    tokenizedKeyValues.add(buildJsonKeyValue(EMPTY_STRING, leafNode.toString()));
                     
                 }
             }
         } else {
-            for (String curr = EMPTY_STRING; keys.hasNext(); ) {
+            for (; keys.hasNext(); ) {
                 
-                curr = keys.next();
+                String curr = keys.next();
                 JsonNode node = json.get(curr);
                 
                 if (!node.isValueNode()) {
-                    DataType datatype = findDataTypeForContainerNode(node);
+                    NonLeafNode datatype = findDataTypeForContainerNode(node);
                     StringBuilder pojo = transformJson(node, datatype, curr);
                     tokenizedKeyValues.add(pojo.toString());
                     
                 } else {
                     
-                    DataType dataType = findDataTypeForLeafNode(node);
-                    tokenizedKeyValues.add(buildJsonKeyValue(curr, dataType.toString()));
+                    LeafNode leafNode = findDataTypeForLeafNode(node);
+                    tokenizedKeyValues.add(buildJsonKeyValue(curr, leafNode.toString()));
                     
                 }
             }
@@ -69,13 +69,13 @@ public class JsonSchemaGenerator {
             op.append("," + tokenizedKeyValues.get(i));
         }
         
-        addParentData(parentDataType, parentNodeName, op);
+        addParentData(parentLeafNode, parentNodeName, op);
         
         return op;
     }
     
-    private void addParentData(DataType parentDataType, String parentNodeName, StringBuilder op) {
-        if (parentDataType.equals(DataType.ARRAY)) {
+    private void addParentData(NonLeafNode parentLeafNode, String parentNodeName, StringBuilder op) {
+        if (parentLeafNode.equals(NonLeafNode.ARRAY)) {
             
             op.append("]");
             op.insert(0, "[");
@@ -92,12 +92,12 @@ public class JsonSchemaGenerator {
         }
     }
     
-    private DataType findDataTypeForContainerNode(JsonNode node) {
+    private NonLeafNode findDataTypeForContainerNode(JsonNode node) {
         
         if (node.isArray()) {
-            return DataType.ARRAY;
+            return NonLeafNode.ARRAY;
         } else {
-            return DataType.OBJECT;
+            return NonLeafNode.OBJECT;
         }
     }
     
@@ -106,13 +106,13 @@ public class JsonSchemaGenerator {
         return String.format("\"%s\" : \"%s\"", key, value);
     }
     
-    private DataType findDataTypeForLeafNode(JsonNode jsonNode) {
+    private LeafNode findDataTypeForLeafNode(JsonNode jsonNode) {
         if (jsonNode.isInt()) {
-            return DataType.INTEGER;
+            return LeafNode.INTEGER;
         } else if (jsonNode.isBoolean()) {
-            return DataType.BOOLEAN;
+            return LeafNode.BOOLEAN;
         } else {
-            return DataType.STRING;
+            return LeafNode.STRING;
         }
     }
     

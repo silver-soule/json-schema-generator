@@ -23,8 +23,8 @@ public class JsonSchemaGeneratorTest {
         JsonSchemaGenerator jsonSchemaGenerator = new JsonSchemaGenerator();
         JsonNode output = MAPPER.readValue(jsonSchemaGenerator.transformJsonToSchema(node), JsonNode.class);
         
-        assertEquals("Integer", output.get("id").textValue());
-        assertEquals("String", output.get("village").textValue());
+        assertEquals("<Integer>", output.get("id").textValue());
+        assertEquals("<String>", output.get("village").textValue());
         
     }
     
@@ -36,8 +36,8 @@ public class JsonSchemaGeneratorTest {
         
         JsonNode output = MAPPER.readValue(jsonSchemaGenerator.transformJsonToSchema(node), JsonNode.class);
         
-        assertEquals("String", output.at("/payload/items/0/product/code").textValue());
-        assertEquals("Integer", output.at("/payload/items/0/id").textValue());
+        assertEquals("<String>", output.at("/payload/items/0/product/code").textValue());
+        assertEquals("<Integer>", output.at("/payload/items/0/id").textValue());
     }
     
     @Test
@@ -48,8 +48,8 @@ public class JsonSchemaGeneratorTest {
         
         JsonNode output = MAPPER.readValue(jsonSchemaGenerator.transformJsonToSchema(node), JsonNode.class);
         
-        assertEquals("String", output.at("/0/product/code").textValue());
-        assertEquals("Integer", output.at("/0/id").textValue());
+        assertEquals("<String>", output.at("/0/product/code").textValue());
+        assertEquals("<Integer>", output.at("/0/id").textValue());
     }
     
     private JsonNode readFromFileAsJsonNode(String path) throws IOException {

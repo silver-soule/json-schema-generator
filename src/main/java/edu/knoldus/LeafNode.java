@@ -1,16 +1,14 @@
 package edu.knoldus;
 
-public enum DataType {
-    
-    ARRAY("array"),
-    OBJECT("object"),
-    INTEGER("Integer"),
-    STRING("String"),
-    BOOLEAN("Boolean");
+public enum LeafNode {
+
+    INTEGER("<Integer>"),
+    STRING("<String>"),
+    BOOLEAN("<Boolean>");
     
     private String type;
     
-    DataType(String type) {
+    LeafNode(String type) {
         this.type = type;
     }
     
