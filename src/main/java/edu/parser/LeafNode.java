@@ -1,7 +1,9 @@
 package edu.parser;
 
-public enum LeafNode {
+import com.fasterxml.jackson.databind.JsonNode;
 
+public enum LeafNode {
+    
     INTEGER("<Integer>"),
     STRING("<String>"),
     BOOLEAN("<Boolean>");
@@ -15,5 +17,15 @@ public enum LeafNode {
     @Override
     public String toString() {
         return type;
+    }
+    
+    public static LeafNode fromJsonNode(JsonNode jsonNode) {
+        if (jsonNode.isInt()) {
+            return LeafNode.INTEGER;
+        } else if (jsonNode.isBoolean()) {
+            return LeafNode.BOOLEAN;
+        } else {
+            return LeafNode.STRING;
+        }
     }
 }

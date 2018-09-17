@@ -11,7 +11,7 @@ public class JsonSchemaGenerator {
     public static final String EMPTY_STRING = "";
     
     public String transformJsonToSchema(JsonNode json) {
-        if (findDataTypeForContainerNode(json).equals(NonLeafNode.OBJECT)) {
+        if (NonLeafNode.fromJsonNode(json).equals(NonLeafNode.OBJECT)) {
             return transformJson(json, NonLeafNode.OBJECT, EMPTY_STRING).toString();
         } else {
             return transformJson(json, NonLeafNode.ARRAY, EMPTY_STRING).toString();
@@ -28,13 +28,13 @@ public class JsonSchemaGenerator {
         if (parentLeafNode.equals(NonLeafNode.ARRAY)) {
             for (JsonNode node : json) {
                 if (!node.isValueNode()) {
-                    NonLeafNode datatype = findDataTypeForContainerNode(node);
+                    NonLeafNode datatype = NonLeafNode.fromJsonNode(node);
                     StringBuilder pojo = transformJson(node, datatype, EMPTY_STRING);
                     tokenizedKeyValues.add(pojo.toString());
                     
                 } else {
                     
-                    LeafNode leafNode = findDataTypeForLeafNode(node);
+                    LeafNode leafNode = LeafNode.fromJsonNode(node);
                     tokenizedKeyValues.add(buildJsonKeyValue(EMPTY_STRING, leafNode.toString()));
                     
                 }
@@ -46,13 +46,13 @@ public class JsonSchemaGenerator {
                 JsonNode node = json.get(curr);
                 
                 if (!node.isValueNode()) {
-                    NonLeafNode datatype = findDataTypeForContainerNode(node);
+                    NonLeafNode datatype = NonLeafNode.fromJsonNode(node);
                     StringBuilder pojo = transformJson(node, datatype, curr);
                     tokenizedKeyValues.add(pojo.toString());
                     
                 } else {
                     
-                    LeafNode leafNode = findDataTypeForLeafNode(node);
+                    LeafNode leafNode = LeafNode.fromJsonNode(node);
                     tokenizedKeyValues.add(buildJsonKeyValue(curr, leafNode.toString()));
                     
                 }
@@ -96,28 +96,9 @@ public class JsonSchemaGenerator {
         }
     }
     
-    private NonLeafNode findDataTypeForContainerNode(JsonNode node) {
-        
-        if (node.isArray()) {
-            return NonLeafNode.ARRAY;
-        } else {
-            return NonLeafNode.OBJECT;
-        }
-    }
-    
     private String buildJsonKeyValue(String key, String value) {
         
         return String.format("\"%s\" : \"%s\"", key, value);
-    }
-    
-    private LeafNode findDataTypeForLeafNode(JsonNode jsonNode) {
-        if (jsonNode.isInt()) {
-            return LeafNode.INTEGER;
-        } else if (jsonNode.isBoolean()) {
-            return LeafNode.BOOLEAN;
-        } else {
-            return LeafNode.STRING;
-        }
     }
     
 }
