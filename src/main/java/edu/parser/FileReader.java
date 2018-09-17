@@ -1,4 +1,4 @@
-package edu.knoldus;
+package edu.parser;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

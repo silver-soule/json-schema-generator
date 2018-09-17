@@ -1,1 +1,0 @@
-"{\"payload\" : {\"items\" : [{\"id\" : \"<Integer>\",\"arrivalDate\" : \"<String>\",\"product\" : {\"code\" : \"<String>\",\"description\" : \"<String>\"}},{\"id\" : \"<Integer>\",\"appointmentDateTime\" : \"<String>\",\"product\" : {\"code\" : \"<String>\",\"description\" : \"<String>\"}}]}}"

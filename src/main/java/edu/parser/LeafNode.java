@@ -1,4 +1,4 @@
-package edu.knoldus;
+package edu.parser;
 
 public enum LeafNode {
 
