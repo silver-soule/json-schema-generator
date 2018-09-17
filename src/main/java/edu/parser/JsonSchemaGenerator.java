@@ -76,19 +76,23 @@ public class JsonSchemaGenerator {
     
     private void addParentData(NonLeafNode parentLeafNode, String parentNodeName, StringBuilder op) {
         if (parentLeafNode.equals(NonLeafNode.ARRAY)) {
-            
-            op.append("]");
-            op.insert(0, "[");
-            if (!parentNodeName.equals(EMPTY_STRING)) {
-                op.insert(0, String.format("\"%s\" : ", parentNodeName));
-            }
+    
+            wrapWithParentElement(parentNodeName, op, "[", "]");
         } else {
-            
-            op.append("}");
-            op.insert(0, "{");
-            if (!parentNodeName.equals(EMPTY_STRING)) {
-                op.insert(0, String.format("\"%s\" : ", parentNodeName));
-            }
+    
+            wrapWithParentElement(parentNodeName, op, "{", "}");
+        }
+    }
+    
+    private void wrapWithParentElement(String parentNodeName,
+                                       StringBuilder schemaString,
+                                       String openingOperator,
+                                       String closingOperator) {
+        
+        schemaString.append(closingOperator);
+        schemaString.insert(0, openingOperator);
+        if (!parentNodeName.equals(EMPTY_STRING)) {
+            schemaString.insert(0, String.format("\"%s\" : ", parentNodeName));
         }
     }
     
