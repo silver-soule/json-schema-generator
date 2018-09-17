@@ -12,7 +12,7 @@ public class FileReader {
     
     private static final ObjectMapper MAPPER = new ObjectMapper();
     
-    public JsonNode readJsonFromFile(String resourcePath) {
+    public JsonNode readAsJsonNodeFromFile(String resourcePath) {
         
         try {
             String content = IOUtils.toString(this.getClass().getResourceAsStream(resourcePath), UTF_8);

@@ -8,21 +8,14 @@ import java.io.InputStreamReader;
 
 public class Printer {
     
-    private final FileReader fileReader;
-    
-    public Printer(FileReader fileReader) {
-        this.fileReader = fileReader;
-    }
-    
     public static void main(String[] args) throws IOException {
         
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        System.out.print("Please enter a valid filepath : ");
+        System.out.print("Please enter a valid file path : ");
         String inputFilePath = "/" + reader.readLine();
         
-        Printer printer = new Printer(new FileReader());
-        
-        JsonNode jsonNode = printer.fileReader.readJsonFromFile(inputFilePath);
+        FileReader fileReader = new FileReader();
+        JsonNode jsonNode = fileReader.readAsJsonNodeFromFile(inputFilePath);
         JsonSchemaGenerator jsonSchemaGenerator = new JsonSchemaGenerator();
         
         String schemaJson = jsonSchemaGenerator.transformJsonToSchema(jsonNode);
