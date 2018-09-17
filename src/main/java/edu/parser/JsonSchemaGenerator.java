@@ -78,6 +78,7 @@ public class JsonSchemaGenerator {
         if (parentLeafNode.equals(NonLeafNode.ARRAY)) {
     
             wrapWithParentElement(parentNodeName, op, "[", "]");
+            
         } else {
     
             wrapWithParentElement(parentNodeName, op, "{", "}");

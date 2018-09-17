@@ -8,15 +8,15 @@ public enum LeafNode {
     STRING("<String>"),
     BOOLEAN("<Boolean>");
     
-    private String type;
+    private String schemaRepresentation;
     
-    LeafNode(String type) {
-        this.type = type;
+    LeafNode(String schemaRepresentation) {
+        this.schemaRepresentation = schemaRepresentation;
     }
     
     @Override
     public String toString() {
-        return type;
+        return schemaRepresentation;
     }
     
     public static LeafNode fromJsonNode(JsonNode jsonNode) {
